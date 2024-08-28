@@ -15,7 +15,7 @@ class Food(models.Model):
 class Store(models.Model):
     user = models.CharField(max_length=15)
     location = models.CharField(max_length=100)
-    foods = models.ForeignKey(Food, on_delete=models.CASCADE)
+    foods = models.ManyToManyField(Food)
 
 class Ticket(models.Model):
     # Relaciona el ticket con una tienda específica

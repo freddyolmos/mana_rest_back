@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Food, Store
+from .models import Food, Store, Ticket, TicketItem
 
 # Registra el modelo Food
 admin.site.register(Food)
@@ -7,5 +7,8 @@ admin.site.register(Food)
 # Registra el modelo Store
 admin.site.register(Store)
 
-# mi_primera_comida = Food()
-# print(mi_primera_comida)
+# Registra el modelo Ticket
+admin.site.register(Ticket)
+
+# Registra el modelo TicketItem
+admin.site.register(TicketItem)
