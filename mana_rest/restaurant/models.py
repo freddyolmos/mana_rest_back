@@ -14,9 +14,13 @@ class Food(models.Model):
     
 
 class Store(models.Model):
+    name = models.CharField(max_length=20, default='Store', null=True)
     users = models.ManyToManyField(User, blank=True)
     location = models.CharField(max_length=100)
     foods = models.ManyToManyField(Food)
+
+    def __str__(self):
+        return f"{self.name}"
 
 class Ticket(models.Model):
     # Relaciona el ticket con una tienda específica
