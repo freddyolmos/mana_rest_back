@@ -12,8 +12,13 @@ class TicketItemInline(admin.TabularInline):
     extra = 1  # Número de formularios vacíos que se mostrarán
 
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('id', 'store', 'date', 'total', 'status', 'customer_name')
+    list_display = ('id', 'store', 'date', 'status', 'customer_name', 'total')
+    def calculated_total(self, obj):
+        return sum(item.price for item in obj.ticketitem_set.all())
+
+    calculated_total.short_description = 'Total'
     inlines = [TicketItemInline]  # Añade el inline para TicketItem
+
 
 
 

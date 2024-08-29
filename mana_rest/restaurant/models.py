@@ -30,7 +30,7 @@ class Ticket(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     
     # Total del ticket
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
     # Estado del ticket (pagado, pendiente, cancelado, etc.)
     STATUS_CHOICES = [
