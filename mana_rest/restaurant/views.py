@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from .models import Food, Store, Ticket
-from .serializers import FoodSerializer, StoreSerializer, TicketSerializer
+from .serializers.serializer_catalog import  FoodSerializer, StoreSerializer
+from .serializers.serializer_ticket import  TicketSerializer
 
 # Vista para listar y crear Foods
 class FoodListCreate(generics.ListCreateAPIView):
@@ -16,7 +17,7 @@ class StoreListCreate(generics.ListCreateAPIView):
     serializer_class = StoreSerializer
 
 
-# Vista para listar y crear Stores
+# Vista para listar y crear Tickets
 class CreateTicket(generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
