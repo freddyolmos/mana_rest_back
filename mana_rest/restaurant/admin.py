@@ -1,8 +1,13 @@
 from django.contrib import admin
 from .models import Food, Store, Ticket, TicketItem
 
+
+class FoodAdmin(admin.ModelAdmin):
+    list_display = ('title', 'price', 'store')
+    list_editable = ('price',)
+
 # Registra el modelo Food
-admin.site.register(Food)
+admin.site.register(Food, FoodAdmin)
 
 # Registra el modelo Store
 admin.site.register(Store)
