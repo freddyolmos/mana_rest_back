@@ -19,7 +19,6 @@ class TicketSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print(f"->>>> {validated_data}")
         ticket_items_data = validated_data.pop('ticket_items', [])
-        # aqui creamos un ticket
         ticket = Ticket.objects.create(**validated_data)
         print(f"la data validada es {validated_data}")
 

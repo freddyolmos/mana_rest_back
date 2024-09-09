@@ -62,13 +62,13 @@ class Banquet(models.Model):
     status = models.CharField(max_length=20, default='pending')
 
     def __str__(self):
-        return f"Banquete for {self.guests} guests - {self.user.username}"
+        return f"Banquete for {self.guests} guests - {self.user.user.username}"
 
-class BanqueteItem(models.Model):
-    banquete = models.ForeignKey(Banquet, on_delete=models.CASCADE)
+class BanquetItem(models.Model):
+    banquet = models.ForeignKey(Banquet, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"{self.quantity}x {self.food.title} for {self.banquete.user.username}"
+        return f"{self.quantity}x {self.food.title} "

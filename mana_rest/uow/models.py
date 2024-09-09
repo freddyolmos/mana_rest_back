@@ -6,4 +6,4 @@ class UserProfile(models.Model):
     has_special_discount = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+       return self.user.username
