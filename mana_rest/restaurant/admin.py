@@ -14,7 +14,7 @@ admin.site.register(Store)
 
 class TicketItemInline(admin.TabularInline):
     model = TicketItem
-    extra = 1  # Número de formularios vacíos que se mostrarán
+    extra = 1 
 
 class TicketAdmin(admin.ModelAdmin):
     list_display = ('id', 'store', 'date', 'status', 'customer_name', 'total')
