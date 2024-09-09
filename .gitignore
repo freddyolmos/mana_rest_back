@@ -16,7 +16,7 @@ build/
 *.sqlite3
 # Environments
 .env
-venv/
+env/
 ENV/
 .venv/
 # IDEs y editores
