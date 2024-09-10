@@ -1,48 +1,85 @@
 from rest_framework import serializers
-from restaurant.models import Ticket, TicketItem
+from restaurant.models import Ticket, TicketItem, Food
 
 
 class TicketItemSerializer(serializers.ModelSerializer):
+    food_title = serializers.CharField(source='food.title', read_only=True)
+    food_category = serializers.CharField(source='food.category', read_only=True)
+
     class Meta:
         model = TicketItem
-        fields = ['food', 'quantity']
+        fields = ['food', 'food_title', 'quantity', 'price', 'discount', 'food_category']
+
+
+class CategorizedTicketItemsSerializer(serializers.Serializer):
+    category = serializers.CharField()
+    items = TicketItemSerializer(many=True)
+
 
 class TicketSerializer(serializers.ModelSerializer):
     ticket_items = TicketItemSerializer(many=True, write_only=True)
+    categorized_items = serializers.SerializerMethodField(read_only=True)
+    total = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Ticket
-        fields = ['store', 'date', 
-                  'status', 'customer_name', 
-                  'ticket_items']
+        fields = ['store', 'date', 'status', 'customer_name', 'ticket_items', 'categorized_items', 'total']
 
     def create(self, validated_data):
-        print(f"->>>> {validated_data}")
         ticket_items_data = validated_data.pop('ticket_items', [])
+
         ticket = Ticket.objects.create(**validated_data)
-        print(f"la data validada es {validated_data}")
 
         total_price = 0
+        categorized_items = {}
 
         for item_data in ticket_items_data:
             food = item_data['food']
             quantity = item_data['quantity']
             price = food.price
-            item_total = price * quantity
-            total_price += item_total
-            print(item_data)
-            # TicketItem.objects.create(
-            # ticket=ticket, 
-            # price=123,
-            # food=1,
-            # quantity=12
-            # )
+            discount = item_data.get('discount', 0)
+            item_total = (price - discount) * quantity
+
+            category = food.category
+            if category not in categorized_items:
+                categorized_items[category] = []
+
+            categorized_items[category].append({
+                'food': food,
+                'quantity': quantity,
+                'price': price,
+                'discount': discount,
+                'item_total': item_total
+            })
+
+            item_data.pop('price', None) 
             TicketItem.objects.create(
-                ticket=ticket, 
+                ticket=ticket,
                 price=item_total,
-                **item_data)
-            
+                **item_data
+            )
+
+            total_price += item_total
+
         ticket.total = total_price
         ticket.save()
 
         return ticket
+
+    def get_categorized_items(self, obj):
+        """
+        Este método organiza los TicketItems por categoría.
+        """
+        categorized_items = {}
+        ticket_items = TicketItem.objects.filter(ticket=obj)
+
+        for item in ticket_items:
+            category = item.food.category
+            if category not in categorized_items:
+                categorized_items[category] = []
+            categorized_items[category].append(TicketItemSerializer(item).data)
+
+        return [
+            {"items": items} for category, items in categorized_items.items()
+        ]
+

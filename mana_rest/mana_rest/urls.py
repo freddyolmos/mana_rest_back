@@ -21,15 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('restaurant.urls')),
-    # path('user/', include('client_users.urls')),
     path('uow/', include('uow.urls')),
 ]
-
-
-# from django.contrib import admin
-# from django.urls import include, path
-
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('api/', include('tu_app.urls')),  # Asegúrate de cambiar 'tu_app' por el nombre de tu aplicación.
-# ]
