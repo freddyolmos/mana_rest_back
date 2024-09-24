@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from restaurant.models import Ticket, TicketItem, Food
+from restaurant.models import Ticket, TicketItem
 
 
 class TicketItemSerializer(serializers.ModelSerializer):
     food_title = serializers.CharField(source='food.title', read_only=True)
-    food_category = serializers.CharField(source='food.category', read_only=True)
 
     class Meta:
         model = TicketItem
-        fields = ['food', 'food_title', 'quantity', 'price', 'discount', 'food_category']
+        fields = ['food', 'food_title', 'quantity', 'price', 'discount']
 
 
-class CategorizedTicketItemsSerializer(serializers.Serializer):
-    category = serializers.CharField()
-    items = TicketItemSerializer(many=True)
+# class CategorizedTicketItemsSerializer(serializers.Serializer):
+#     category = serializers.CharField()
+#     items = TicketItemSerializer(many=True)
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -80,6 +79,6 @@ class TicketSerializer(serializers.ModelSerializer):
             categorized_items[category].append(TicketItemSerializer(item).data)
 
         return [
-            {"items": items} for category, items in categorized_items.items()
+            {"category": category,"items": items} for category, items in categorized_items.items()
         ]
 
