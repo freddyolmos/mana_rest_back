@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'restaurant',
-    # 'client_users',
     'uow'
 ]
 
@@ -94,8 +93,8 @@ WSGI_APPLICATION = 'mana_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'restaurant',
-        'USER': 'admin',
+        'NAME': 'p',
+        'USER': 'root',
         'PASSWORD': '2k23R&Fjdn',
         'HOST': 'localhost',
         'PORT': '3306',
