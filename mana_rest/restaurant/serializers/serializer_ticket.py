@@ -4,16 +4,12 @@ from restaurant.models import Ticket, TicketItem
 
 class TicketItemSerializer(serializers.ModelSerializer):
     food_title = serializers.CharField(source='food.title', read_only=True)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    discount = serializers.DecimalField(source='food.discount', max_digits=5, decimal_places=2, read_only=True)
 
     class Meta:
         model = TicketItem
         fields = ['food', 'food_title', 'quantity', 'price', 'discount']
-
-
-# class CategorizedTicketItemsSerializer(serializers.Serializer):
-#     category = serializers.CharField()
-#     items = TicketItemSerializer(many=True)
-
 
 class TicketSerializer(serializers.ModelSerializer):
     ticket_items = TicketItemSerializer(many=True, write_only=True)
@@ -36,8 +32,11 @@ class TicketSerializer(serializers.ModelSerializer):
             food = item_data['food']
             quantity = item_data['quantity']
             price = food.price
-            discount = item_data.get('discount', 0)
-            item_total = (price - discount) * quantity
+            discount_percentage = food.discount
+            # discount = item_data.get('discount', 0)
+            # item_total = (price - discount) * quantity
+            discount_amount = (discount_percentage / 100) * price
+            item_total = (price - discount_amount) * quantity
 
             category = food.category
             if category not in categorized_items:
@@ -47,11 +46,11 @@ class TicketSerializer(serializers.ModelSerializer):
                 'food': food,
                 'quantity': quantity,
                 'price': price,
-                'discount': discount,
+                'discount': discount_percentage,
                 'item_total': item_total
             })
 
-            item_data.pop('price', None) 
+            #item_data.pop('price', None) 
             TicketItem.objects.create(
                 ticket=ticket,
                 price=item_total,

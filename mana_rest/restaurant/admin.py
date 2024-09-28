@@ -3,7 +3,7 @@ from .models import Food, Store, Ticket, TicketItem, Banquet, BanquetItem
 
 
 class FoodAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'category', 'store',)
+    list_display = ('title', 'price', 'category', 'discount',)
     list_editable = ('price',)
 
 admin.site.register(Food, FoodAdmin)

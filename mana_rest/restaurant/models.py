@@ -10,6 +10,7 @@ class Food(models.Model):
     category = models.CharField(max_length=30, null=True, blank=True)
     is_available = models.BooleanField(default=True)  
     store = models.ForeignKey('Store', on_delete=models.CASCADE, related_name='foods', blank=True, null=True)
+    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     def __str__(self):
         return f"{self.title}"
@@ -48,7 +49,6 @@ class TicketItem(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     def __str__(self):
         return f"{self.quantity}x {self.food.title} - Ticket #{self.ticket.id}"

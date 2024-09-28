@@ -12,3 +12,7 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
 
+class FoodSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Food
+        fields = ['title', 'price', 'image', 'discount']
