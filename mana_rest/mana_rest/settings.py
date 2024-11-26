@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'mana_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'p',
-        'USER': 'root',
-        'PASSWORD': '2k23R&Fjdn',
-        'HOST': 'localhost',
+        'NAME': 'api_tv',
+        'USER': 'admin',
+        'PASSWORD': 'admin_password',  # Cambia esto a la contraseña correcta
+        'HOST': '172.30.195.177',
         'PORT': '3306',
     }
 }
