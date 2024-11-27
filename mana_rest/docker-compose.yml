@@ -44,6 +44,7 @@ services:
       - DATABASE_NAME=api_tv
       - DATABASE_USER=admin
       - DATABASE_PASSWORD=admin_password
+      - MIGRATE=false
     command: /entrypoint.sh
 
 networks:
