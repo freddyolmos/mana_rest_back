@@ -1,17 +1,17 @@
-version: "3.8"
 services:
   db:
-    # Usamos la imagen oficial de MySQL
     image: mysql:8.0
     environment:
-      - MYSQL_DATABASE=api_tv  # Nombre de la base de datos a crear
-      - MYSQL_ROOT_PASSWORD=root_password  # Contraseña del root
-      - MYSQL_USER=admin  # Nombre de usuario
-      - MYSQL_PASSWORD=admin_password  # Contraseña del usuario admin
+      - MYSQL_DATABASE=api_tv
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin_password
     ports:
-      - 3306:3306  # Exponemos el puerto 3306 para acceso
+      - 3306:3306
+    command:
+      --require-secure-transport=OFF
     volumes:
-      - tvision_mysql_data:/var/lib/mysql  # Volumen persistente para los datos de MySQL
+      - tvision_mysql_data:/var/lib/mysql
     networks:
       - main
 
@@ -27,8 +27,29 @@ services:
     networks:
       - main
 
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/app 
+    ports:
+      - 8000:8000
+    depends_on:
+      - db  
+    networks:
+      - main
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=api_tv
+      - DATABASE_USER=admin
+      - DATABASE_PASSWORD=admin_password
+    command: /entrypoint.sh
+
 networks:
   main:
+    external: true
+    name: mana_rest_main
 
 volumes:
   tvision_mysql_data:

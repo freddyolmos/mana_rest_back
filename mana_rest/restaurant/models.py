@@ -3,14 +3,35 @@ from django.conf import settings
 from uow.models import UserProfile
 
 class Food(models.Model):
+    CATEGORY_CHOICES = [
+        ('starter', 'Starter'),
+        ('main_course', 'Main Course'),
+        ('dessert', 'Dessert'),
+        ('drink', 'Drink'),
+    ]
     title = models.CharField(max_length=25)
     description = models.TextField(max_length=200)
     image = models.URLField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=1000.00)
-    category = models.CharField(max_length=30, null=True, blank=True)
+    category = models.CharField(
+        max_length=30, 
+        choices=CATEGORY_CHOICES, 
+        null=True, 
+        blank=True
+    )
     is_available = models.BooleanField(default=True)  
     store = models.ForeignKey('Store', on_delete=models.CASCADE, related_name='foods', blank=True, null=True)
-    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    discount = models.DecimalField(
+        max_digits=5, 
+        decimal_places=2, 
+        default=0,
+        help_text="Discount as a percentage (0 to 100%)"
+    )
+
+    def clean(self):
+        super().clean()
+        if self.discount < 0 or self.discount > 100:
+            raise ValueError("Discount must be between 0 and 100.")
 
     def __str__(self):
         return f"{self.title}"
@@ -18,14 +39,41 @@ class Food(models.Model):
 
 class Store(models.Model):
     name = models.CharField(max_length=20, default='Store', null=True)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, 
+        through='StoreUser',
+        blank=True, 
+        related_name='stores'
+    )
     location = models.CharField(max_length=100)
-    contact_phone = models.CharField(max_length=15, null=True, blank=True)
+    contact_phone = models.CharField(
+        max_length=15, 
+        null=True, 
+        blank=True,
+        help_text="Enter a valid phone number format, e.g., +123456789."
+    )
     opening_time = models.TimeField(null=True, blank=True)
     closing_time = models.TimeField(null=True, blank=True)
 
+    def clean(self):
+        super().clean()
+        if self.opening_time and self.closing_time and self.opening_time >= self.closing_time:
+            raise ValueError("Closing time must be later than opening time.")
+
     def __str__(self):
         return f"{self.name}"
+    
+class StoreUser(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    ROLE_CHOICES = [
+        ('admin', 'Administrator'),
+        ('staff', 'Staff'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='staff')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.store.name} ({self.get_role_display()})"
 
 class Ticket(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='tickets')
