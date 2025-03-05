@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from uow.models import UserProfile
+from uow.models import CustomUser
 
 class Food(models.Model):
     CATEGORY_CHOICES = [
@@ -102,7 +102,7 @@ class TicketItem(models.Model):
         return f"{self.quantity}x {self.food.title} - Ticket #{self.ticket.id}"
 
 class Banquet(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     datetime = models.DateTimeField(auto_now_add=True)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
