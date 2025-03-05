@@ -30,3 +30,8 @@ This backend is the core of the **Mana Restaurant** application, designed to man
    ```bash
    git clone https://github.com/freddyolmos/mana_rest_back.git
    cd mana_rest_back
+
+2. **Create and activate a virtual environment:**
+It's recommended to use a virtual environment to avoid conflicts with global dependencies.
+
+On macOS/Linux:
